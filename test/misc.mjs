@@ -539,4 +539,26 @@ describe('Definition', function () {
       { label: 'foo', destination: '', title: '' }
     )
   })
+
+  it('Should render nested link reference definition token', function () {
+    const md = markdownit()
+
+    assert.strictEqual(md.render('[foo]\n\n> [foo]: /url', {}), '<p><a href="/url">foo</a></p>\n<blockquote></blockquote>\n')
+
+    let tokens = md.parse('[foo]\n\n> [foo]: /url', {})
+    assert.strictEqual(type_filter(tokens, 'definition').length, 1)
+    tokens = type_filter(tokens, 'definition')
+    assert.deepEqual(
+      tokens[0].level,
+      1
+    )
+    assert.deepEqual(
+      tokens[0].map,
+      [2, 3]
+    )
+    assert.deepEqual(
+      tokens[0].meta,
+      { label: 'foo', destination: '/url', title: '' }
+    )
+  })
 })
